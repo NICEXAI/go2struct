@@ -39,6 +39,8 @@ func convertMapToCellNode(name string, m map[string]interface{}, tier int) (cn [
 			} else {
 				fType = "int"
 			}
+		case int:
+			fType = "int"
 		case bool:
 			fType = "bool"
 		case string:

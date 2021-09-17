@@ -8,10 +8,10 @@ Run the following command under your project:
 > go get -u github.com/NICEXAI/go2struct
 
 ### Feature
-- [x] Map To Struct
-- [x] JSON to Struct
-- [x] YAML to Struct
-- [ ] TOML to Struct
+- [x] Map to struct
+- [x] JSON to struct
+- [x] YAML to struct
+- [ ] TOML to struct
 
 ### Example
 

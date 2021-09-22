@@ -47,6 +47,15 @@ func convertMapToCellNode(name string, m map[string]interface{}, tier int) (cn [
 			fType = "string"
 		case map[string]interface{}:
 			fType = "struct"
+		case map[interface{}]interface{}:
+			//convert map[interface{}]interface{} to map[string]interface{}
+			newVal := make(map[string]interface{})
+			for k, v := range val.(map[interface{}]interface{}) {
+				strKey := fmt.Sprintf("%v", k)
+				newVal[strKey] = v
+			}
+			val = newVal
+			fType = "struct"
 		}
 
 		if fType != "struct" {

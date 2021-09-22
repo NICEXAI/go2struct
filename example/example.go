@@ -30,7 +30,7 @@ func main() {
 	_ = json.Unmarshal(bData, &options)
 
 	//map to struct
-	structTxt := go2struct.Map2Struct(options)
+	structTxt := go2struct.Map2Struct("message", options)
 
 	fmt.Printf("map to struct success, result: \n%s", structTxt)
 
@@ -45,7 +45,7 @@ func main() {
 	}
 	`
 
-	res, err := go2struct.JSON2Struct([]byte(jsonTemp))
+	res, err := go2struct.JSON2Struct("message", []byte(jsonTemp))
 	if err != nil {
 		fmt.Printf("json to struct failed, error: \n%v", err)
 		return
@@ -60,7 +60,7 @@ msg:
  content: Hello
 `
 
-	res, err = go2struct.YAML2Struct([]byte(temp))
+	res, err = go2struct.YAML2Struct("message", []byte(temp))
 	if err != nil {
 		fmt.Printf("yaml to struct failed, error: \n%v", err)
 		return

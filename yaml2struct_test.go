@@ -10,7 +10,7 @@ msg:
  content: Hello
 `
 
-	res, err := YAML2Struct([]byte(temp))
+	res, err := YAML2Struct("message", []byte(temp))
 	if err != nil {
 		t.Fatalf("yaml to struct failed, error: \n%v", err)
 		return

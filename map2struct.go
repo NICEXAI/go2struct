@@ -16,9 +16,9 @@ const (
 )
 
 // Map2Struct convert map to struct
-func Map2Struct(m map[string]interface{}) string {
-	cellNodes := convertMapToCellNode("message", m, 0)
-	return strings.Join(cellNodes, "")
+func Map2Struct(name string, m map[string]interface{}) []byte {
+	cellNodes := convertMapToCellNode(name, m, 0)
+	return []byte(strings.Join(cellNodes, ""))
 }
 
 func convertMapToCellNode(name string, m map[string]interface{}, tier int) (cn []string) {

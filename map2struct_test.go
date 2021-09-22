@@ -27,5 +27,5 @@ func TestMap2Struct(t *testing.T) {
 		return
 	}
 	_ = json.Unmarshal(bData, &options)
-	t.Logf("map to struct success, result: \n%s", Map2Struct(options))
+	t.Logf("map to struct success, result: \n%s", Map2Struct("message", options))
 }

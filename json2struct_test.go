@@ -15,7 +15,7 @@ func TestJSON2Struct(t *testing.T) {
 	}
 	`
 
-	res, err := JSON2Struct([]byte(temp))
+	res, err := JSON2Struct("message", []byte(temp))
 	if err != nil {
 		t.Fatalf("json to struct failed, error: \n%v", err)
 		return

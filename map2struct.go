@@ -65,6 +65,16 @@ func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, t
 					cn = append(cn, fmt.Sprintf(structFieldTag, getSpaceByTier(tier), fName, "[]"+fSubType, util.UpperCamelCaseToUnderscore(field)))
 				}
 				if fSubType == "struct" {
+					if sList, ok := subList[0].(map[interface{}]interface{}); ok {
+						//convert map[interface{}]interface{} to map[string]interface{}
+						sNewVal := make(map[string]interface{})
+						for k, v := range sList {
+							strKey := fmt.Sprintf("%v", k)
+							sNewVal[strKey] = v
+						}
+						subList[0] = sNewVal
+					}
+
 					child := convertMapToCellNode(field, subList[0].(map[string]interface{}), true, tier+1)
 					cn = append(cn, child...)
 				}

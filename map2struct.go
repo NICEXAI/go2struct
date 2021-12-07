@@ -18,7 +18,8 @@ const (
 // Map2Struct convert map to struct
 func Map2Struct(name string, m map[string]interface{}) []byte {
 	cellNodes := convertMapToCellNode(name, m, false, 0)
-	return []byte(strings.Join(cellNodes, ""))
+	structTxt, _ := util.FormatGoStruct(strings.Join(cellNodes, ""))
+	return []byte(structTxt)
 }
 
 func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, tier int) (cn []string) {

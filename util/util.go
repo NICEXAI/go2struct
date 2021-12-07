@@ -1,6 +1,10 @@
 package util
 
 import (
+	"bytes"
+	"go/format"
+	"go/parser"
+	"go/token"
 	"strings"
 	"unicode"
 )
@@ -37,4 +41,23 @@ func UpperCamelCaseToUnderscore(n string) string {
 	}
 
 	return string(cList)
+}
+
+// FormatGoStruct format the go struct text
+func FormatGoStruct(txt string) (string, error) {
+	buffer := bytes.NewBufferString("")
+	choreTxt := "package main\n\n"
+	newTxt := choreTxt + string(txt)
+
+	f, err := parser.ParseFile(token.NewFileSet(), "", []byte(newTxt), 0)
+	if err != nil {
+		return "", err
+	}
+
+	if err = format.Node(buffer, token.NewFileSet(), f); err != nil {
+		return "", err
+	}
+
+	structTxt := strings.Replace(buffer.String(), choreTxt, "", 1)
+	return structTxt, nil
 }

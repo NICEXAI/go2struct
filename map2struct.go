@@ -26,7 +26,6 @@ func Map2Struct(name string, m map[string]interface{}, args ...string) []byte {
 }
 
 func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, tier int, args ...string) (cn []string) {
-	fmt.Println(args, 123)
 	tagName := "json"
 	if len(args) > 0 {
 		tagName = args[0]

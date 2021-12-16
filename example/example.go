@@ -60,7 +60,8 @@ msg:
  content: Hello
 `
 
-	res, err = go2struct.YAML2Struct("message", []byte(temp))
+	// supports custom field tag name
+	res, err = go2struct.YAML2Struct("message", []byte(temp), "mapstructure")
 	if err != nil {
 		fmt.Printf("yaml to struct failed, error: \n%v", err)
 		return

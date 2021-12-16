@@ -7,22 +7,30 @@ import (
 )
 
 const (
-	structFirst    = "type "
-	structLast     = "}"
+	structFirst = "type "
+	structLast  = "}"
+	// $name $isSlice struct {
 	structStartTag = "%s %sstruct {\n"
-	structEndTag   = "%s} `json:\"%s\"`\n"
-	structSpace    = "    "
-	structFieldTag = "%s%s %s `json:\"%s\"`\n"
+	// $space} `$tag:\"%name\"`\n"
+	structEndTag = "%s} `%s:\"%s\"`\n"
+	structSpace  = "    "
+	// $space $name $type `$tag:"$nameFormat"`
+	structFieldTag = "%s%s %s `%s:\"%s\"`\n"
 )
 
 // Map2Struct convert map to struct
-func Map2Struct(name string, m map[string]interface{}) []byte {
-	cellNodes := convertMapToCellNode(name, m, false, 0)
+func Map2Struct(name string, m map[string]interface{}, args ...string) []byte {
+	cellNodes := convertMapToCellNode(name, m, false, 0, args...)
 	structTxt, _ := util.FormatGoStruct(strings.Join(cellNodes, ""))
 	return []byte(structTxt)
 }
 
-func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, tier int) (cn []string) {
+func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, tier int, args ...string) (cn []string) {
+	fmt.Println(args, 123)
+	tagName := "json"
+	if len(args) > 0 {
+		tagName = args[0]
+	}
 	if tier == 0 {
 		cn = append(cn, structFirst)
 	}
@@ -50,11 +58,11 @@ func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, t
 		}
 
 		if fType != "struct" && fType != "slice" {
-			cn = append(cn, fmt.Sprintf(structFieldTag, getSpaceByTier(tier), fName, fType, util.UpperCamelCaseToUnderscore(field)))
+			cn = append(cn, fmt.Sprintf(structFieldTag, getSpaceByTier(tier), fName, fType, tagName, util.UpperCamelCaseToUnderscore(field)))
 		}
 
 		if fType == "struct" {
-			child := convertMapToCellNode(field, val.(map[string]interface{}), false, tier+1)
+			child := convertMapToCellNode(field, val.(map[string]interface{}), false, tier+1, args...)
 			cn = append(cn, child...)
 		}
 
@@ -63,7 +71,7 @@ func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, t
 			if len(subList) > 0 {
 				fSubType := getFiledType(subList[0])
 				if fSubType != "struct" && fSubType != "slice" {
-					cn = append(cn, fmt.Sprintf(structFieldTag, getSpaceByTier(tier), fName, "[]"+fSubType, util.UpperCamelCaseToUnderscore(field)))
+					cn = append(cn, fmt.Sprintf(structFieldTag, getSpaceByTier(tier), fName, "[]"+fSubType, tagName, util.UpperCamelCaseToUnderscore(field)))
 				}
 				if fSubType == "struct" {
 					if sList, ok := subList[0].(map[interface{}]interface{}); ok {
@@ -76,7 +84,7 @@ func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, t
 						subList[0] = sNewVal
 					}
 
-					child := convertMapToCellNode(field, subList[0].(map[string]interface{}), true, tier+1)
+					child := convertMapToCellNode(field, subList[0].(map[string]interface{}), true, tier+1, args...)
 					cn = append(cn, child...)
 				}
 			}
@@ -86,7 +94,7 @@ func convertMapToCellNode(name string, m map[string]interface{}, isSlice bool, t
 	if tier == 0 {
 		cn = append(cn, structLast)
 	} else {
-		cn = append(cn, fmt.Sprintf(structEndTag, wrapperSpace, name))
+		cn = append(cn, fmt.Sprintf(structEndTag, wrapperSpace, tagName, name))
 	}
 	return cn
 }
